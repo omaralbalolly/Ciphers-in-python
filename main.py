@@ -1,4 +1,5 @@
 from string import ascii_uppercase
+from check_invertible import isInvertible
 
 
 class HillCipher:
@@ -7,23 +8,32 @@ class HillCipher:
         for i in range(0, 26):
             j.append(i)
         self.char = dict(zip(list(ascii_uppercase), j))
+        if len(message) % 3 != 0:
+            a = len(message) % 3
+            x = 'X' * (3 - a)
+            message += x
         self.message = list(message.upper())
-        self.key_word = key_word
+        self.key_word = key_word.upper()
+        self.key = self.make_key(self.key_word)
+        self.message_matrix = [self.char[l] for l in self.message]
+        self.message_lists = [self.message_matrix[i:i + 3] for i in range(0, len(self.message_matrix), 3)]
+
+    @staticmethod
+    def make_key(keyword):
+        keyword = keyword.upper()
+        j = []
+        for i in range(0, 26):
+            j.append(i)
+        char = dict(zip(list(ascii_uppercase), j))
         key = [[0] * 3, [0] * 3, [0] * 3]
         counter = 0
         for i in range(3):
             for j in range(3):
-                key[i][j] = self.char[self.key_word[counter]]
+                key[i][j] = char[keyword[counter]]
                 counter += 1
-        self.key = key
-        self.message_matrix = [self.char[l] for l in self.message]
-        self.message_lists = [self.message_matrix[i:i + 3] for i in range(0, len(self.message_matrix), 3)]
+        return key
 
     def encrypt(self):
-        # print(f'Alphabet {self.char}')
-        # print(f'Message {self.message_lists}')
-        # print(f'Key {self.key}')
-        # key_columns = [[l[i] for l in self.key] for i in range(len(self.key))]
         result = []
         for pair in self.message_lists:
             for column in self.key:
@@ -33,12 +43,36 @@ class HillCipher:
         for number in result:
             word += char_inv[number]
         return word
-    def decrypt(self):
-        pass
+
+    @staticmethod
+    def banner():
+        print("""
+ ██      ██ ██  ██  ██         ██████  ██         ██       ████
+░██     ░██░░  ░██ ░██        ██░░░░██░░  ██████ ░██      █░░░ █
+░██     ░██ ██ ░██ ░██       ██    ░░  ██░██░░░██░██     ░    ░█ ██████
+░██████████░██ ░██ ░██ █████░██       ░██░██  ░██░██████    ███ ░░██░░█
+░██░░░░░░██░██ ░██ ░██░░░░░ ░██       ░██░██████ ░██░░░██  ░░░ █ ░██ ░
+░██     ░██░██ ░██ ░██      ░░██    ██░██░██░░░  ░██  ░██ █   ░█ ░██
+░██     ░██░██ ███ ███       ░░██████ ░██░██     ░██  ░██░ ████ ░███
+░░      ░░ ░░ ░░░ ░░░         ░░░░░░  ░░ ░░      ░░   ░░  ░░░░  ░░░ v1337.0
+--------------------------------------------------------------------
+ A Code written to demonstrate a -> Hill-cipher <- \n\n""")
 
 
 if __name__ == '__main__':
-    key = 'GYBNQKURP'
-    message = 'ACTDEFGHI'
-    p = HillCipher(message, key)
-    print(p.encrypt())
+    HillCipher.banner()
+    message = input('[*] Please enter the message to encrypt: ')
+    while True:
+        keyword = input('[*] Please enter the cipher key: ')
+        if len(keyword) != 9:
+            print('[!] The key length must be 9 letters')
+            continue
+        if not isInvertible(HillCipher.make_key(keyword)):
+            print('[!] This key is not invertible')
+            continue
+        break
+    p = HillCipher(message, keyword)
+    print(f'[+] Your encrypted message is: {p.encrypt()}')
+
+# For testing
+# key = 'GYBNQKURP' is invertible
