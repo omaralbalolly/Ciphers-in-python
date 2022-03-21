@@ -71,6 +71,8 @@ if __name__ == '__main__':
             print('[!] This key is not invertible')
             continue
         break
+    message = message.replace(" ", "")
+    keyword = keyword.replace(" ", "")
     p = HillCipher(message, keyword)
     print(f'[+] Your encrypted message is: {p.encrypt()}')
 
