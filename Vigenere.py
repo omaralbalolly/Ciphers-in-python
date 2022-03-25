@@ -28,7 +28,7 @@ class Vingere:
         plain = list(plain)
         if not key:
             print("[*] User didn't provide a valid key\n[-] Generating a key...")
-            key = list("deception")
+            key = list("deceptive")
         self.generate_key(plain, list(key))
         num_key = [i for i in self.key]
         num_plain = [i for i in plain]
@@ -68,7 +68,7 @@ class Vingere:
             while plain == '':
                 plain = input("[*] Enter a text to encrypt: ")
             plain = plain.replace(" ", "").lower()
-            key = input("[*] Enter a key (Default: deception): ")
+            key = input("[*] Enter a key (Default: deceptive): ")
             if key == '':
                 key = None
             else:
